@@ -1,0 +1,151 @@
+# O diagrama de exemplo: como este template vira um portal publicado.
+# Raias são colunas, na ordem em que aparecem; `linha` é a posição
+# vertical dentro da raia. As posições e as setas são calculadas.
+titulo: Como o portal é construído
+ordem: 99
+raias:
+  - id: escrever
+    titulo: Escrever
+  - id: construir
+    titulo: Construir
+  - id: publicar
+    titulo: Publicar
+nos:
+  - id: markdown
+    raia: escrever
+    linha: 1
+    titulo: Arquivos markdown
+    subtitulo: content/*.md
+    icone: documento
+    ficha:
+      definicao: A fonte de tudo o que aparece no portal. Cada arquivo é uma seção; o frontmatter dá título, ordem e ícone.
+      como:
+        - [frontmatter, "Quatro campos entre `---`: title, order, icon e lang."]
+        - [corpo, "Markdown completo, mais os blocos `::: cards` e `::: passos`."]
+        - [imagens, "Ficam em content/assets/ e são referenciadas como assets/<arquivo>."]
+      exemplo: |
+        ---
+        title: Visão geral
+        icon: casa
+        ---
+      nunca: ser transcrito à mão para dentro do código.
+  - id: config
+    raia: escrever
+    linha: 2
+    titulo: Configuração
+    subtitulo: site.config.json
+    icone: engrenagem
+    ficha:
+      definicao: "Tudo o que é do cliente, num arquivo só: nome, domínio, idiomas, logo, diagrama, modo de login."
+      como:
+        - [nome, "Título da aba, cabeçalho e página de login."]
+        - [domínio, "Base do redirect_uri e da verificação de origem."]
+        - [idiomas, "O padrão e os outros; o toggle aparece quando há mais de um."]
+      nunca: guardar segredos. WORKOS_API_KEY, WORKOS_CLIENT_ID e SESSION_SECRET são variáveis de ambiente.
+  - id: diagrama
+    raia: escrever
+    linha: 3
+    titulo: Diagrama
+    subtitulo: content/diagrama.yaml
+    icone: mapa
+    ficha:
+      definicao: Raias, nós e ligações declarados em YAML. Este mapa é o próprio arquivo.
+      como:
+        - [raias, "Colunas, da esquerda para a direita."]
+        - [nós, "Cada um com raia, linha, título, ícone e uma ficha opcional."]
+        - [ligações, "De um nó para outro, com rótulo e estilo `fluxo` ou `apoio`."]
+      nunca: ter coordenadas escritas à mão.
+  - id: plugin
+    raia: construir
+    linha: 1
+    titulo: Plugin de conteúdo
+    subtitulo: plugins/conteudo.js
+    icone: engrenagem
+    tipo: plataforma
+    ficha:
+      definicao: O motor. No build e no dev, lê content/ e entrega as seções ao app como um módulo virtual.
+      como:
+        - [validação, "Frontmatter, ícones, imagens e ligações do diagrama são conferidos; erro derruba o build com o nome do arquivo."]
+        - [markdown, "Vira HTML aqui, em Node. O navegador nunca vê markdown."]
+        - [assets, "content/assets/ é publicado em /conteudo/assets/, atrás do login."]
+      exemplo: |
+        npm run build
+        # dist/ com as seções compiladas
+      nunca: ser editado para mudar conteúdo. Conteúdo é content/.
+  - id: app
+    raia: construir
+    linha: 2
+    titulo: App React
+    subtitulo: src/motor, src/diagrama
+    icone: barras
+    ficha:
+      definicao: A moldura. Barra lateral, seções, idioma, tema, o mapa e a ficha de cada nó.
+      como:
+        - [seção ativa, "Vem do #slug da URL; qualquer seção tem link."]
+        - [tema, "Escuro por padrão; o claro é o espelho exato dos tokens."]
+      nunca: conter texto do cliente.
+  - id: vercel
+    raia: publicar
+    linha: 1
+    titulo: Vercel
+    subtitulo: build, middleware e funções
+    icone: nuvem
+    tipo: plataforma
+    ficha:
+      definicao: Onde o portal roda. O build estático, o middleware de borda e as funções de auth em api/.
+      como:
+        - [middleware, "Protege tudo por padrão; allowlist exata para login, auth, fontes e marca."]
+        - [sem variáveis, "Em produção responde 503; em desenvolvimento abre."]
+        - [deploy, "Importar o repositório basta. A Vercel detecta o Vite."]
+      nunca: abrir em produção por acidente.
+  - id: workos
+    raia: publicar
+    linha: 2
+    titulo: WorkOS
+    subtitulo: contas e senhas
+    icone: cadeado
+    ficha:
+      definicao: Guarda os usuários e confere as senhas. O portal não tem banco.
+      como:
+        - [senha, "A página própria envia e-mail e senha para /api/auth/senha."]
+        - [sessão, "Um JWT assinado num cookie HttpOnly, válido por 12 horas."]
+        - [fallback, "MFA, verificação e senha esquecida passam pelo fluxo hospedado."]
+      nunca: responder diferente para um e-mail que existe e um que não existe.
+  - id: dominio
+    raia: publicar
+    linha: 3
+    titulo: Domínio próprio
+    subtitulo: opcional
+    icone: globo
+    estado: futuro
+    ficha:
+      definicao: O endereço do cliente, apontado para a Vercel. Sem ele, o portal vive em .vercel.app.
+      como:
+        - [DNS, "Um registro A para o apex e um CNAME para www."]
+        - [configuração, "O domínio entra em site.config.json antes do WorkOS, para o redirect_uri nascer certo."]
+      nunca: ser trocado sem atualizar a lista de redirect URIs no WorkOS.
+ligacoes:
+  - de: markdown
+    para: plugin
+    rotulo: lidos no build
+  - de: config
+    para: plugin
+    rotulo: nome, idiomas, logo
+  - de: diagrama
+    para: plugin
+    estilo: apoio
+  - de: plugin
+    para: app
+    rotulo: módulo virtual
+  - de: app
+    para: vercel
+    rotulo: dist/
+  - de: vercel
+    para: workos
+    rotulo: login
+  - de: vercel
+    para: dominio
+    estilo: apoio
+grupos:
+  - titulo: Fora do repositório
+    nos: [vercel, workos, dominio]

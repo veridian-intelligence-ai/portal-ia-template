@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="%LANG%">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#000000" />
+    %NOINDEX%
+    <link rel="icon" type="image/svg+xml" href="%FAVICON%" />
+    <!-- As fontes (Unbounded, Inter, JetBrains Mono) são locais, via
+         @fontsource, importadas em src/main.jsx: nenhuma requisição
+         externa. Os marcadores %...% vêm de site.config.json, trocados
+         pelo plugin de conteúdo no build e no dev. -->
+    <!-- O tema é restaurado ANTES da primeira pintura, para a página não
+         abrir escura e piscar para o claro. A chave é a de src/motor/tema.js. -->
+    <script>
+      try {
+        var guardado = localStorage.getItem('portal-tema')
+        if (guardado === 'claro' || (!guardado && '%TEMA_PADRAO%' === 'claro')) document.documentElement.classList.add('theme-light')
+      } catch (e) {}
+    </script>
+    <title>%NOME%</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

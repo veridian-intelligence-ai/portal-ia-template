@@ -1,0 +1,38 @@
+{
+  "name": "portal-ia-template",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Portal de conteúdo protegido, gerado a partir de markdown. Vite + React, login por senha (WorkOS) sem banco, Vercel.",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "audit:contrast": "node scripts/contrast-audit.mjs",
+    "audit:contrast:claro": "node scripts/contrast-audit.mjs --tema=claro",
+    "audit:overflow": "node scripts/overflow-audit.mjs",
+    "audit:overflow:claro": "node scripts/overflow-audit.mjs --tema=claro",
+    "check:limpo": "node scripts/limpeza.mjs"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/unbounded": "^5.3.0",
+    "@workos-inc/node": "^10.13.0",
+    "jose": "^6.2.12",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "js-yaml": "^5.4.1",
+    "marked": "^18.0.12",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
+  }
+}

@@ -1,0 +1,53 @@
+/** Os rótulos da interface, por idioma. Conteúdo é outra coisa: vem de content/. */
+const TEXTOS = {
+  'pt-BR': {
+    pular: 'Pular para o conteúdo',
+    secoes: 'Seções',
+    nestaSecao: 'Nesta seção',
+    anterior: 'Anterior',
+    proxima: 'Próxima',
+    sair: 'Sair',
+    idioma: 'Idioma',
+    temaClaro: 'Mudar para o tema claro',
+    temaEscuro: 'Mudar para o tema escuro',
+    portalAberto: 'Portal aberto',
+    naoTraduzido: 'Esta seção ainda não foi traduzida. O texto abaixo está no idioma padrão.',
+    diagrama: 'Diagrama',
+    diagramaAjuda: 'Clique em um nó para abrir a ficha. Tab percorre os nós; as setas também; Esc fecha.',
+    definicao: 'Definição',
+    como: 'Como funciona',
+    exemplo: 'Exemplo',
+    nunca: 'Nunca',
+    fechar: 'Fechar',
+    previsto: 'Previsto',
+    ativo: 'Ativo',
+    raia: 'Raia',
+  },
+  en: {
+    pular: 'Skip to content',
+    secoes: 'Sections',
+    nestaSecao: 'In this section',
+    anterior: 'Previous',
+    proxima: 'Next',
+    sair: 'Sign out',
+    idioma: 'Language',
+    temaClaro: 'Switch to the light theme',
+    temaEscuro: 'Switch to the dark theme',
+    portalAberto: 'Open portal',
+    naoTraduzido: 'This section is not translated yet. The text below is in the default language.',
+    diagrama: 'Diagram',
+    diagramaAjuda: 'Click a node to open its card. Tab and the arrow keys move between nodes; Esc closes.',
+    definicao: 'Definition',
+    como: 'How it works',
+    exemplo: 'Example',
+    nunca: 'Never',
+    fechar: 'Close',
+    previsto: 'Planned',
+    ativo: 'Active',
+    raia: 'Lane',
+  },
+}
+
+export function textos(lang) {
+  return TEXTOS[lang] || TEXTOS[String(lang).split('-')[0]] || TEXTOS.en
+}

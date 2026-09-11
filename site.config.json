@@ -1,0 +1,15 @@
+{
+  "nome": "Portal de Documentação",
+  "nomeCurto": "Portal",
+  "organizacao": "Sua organização",
+  "dominio": "",
+  "aliases": [],
+  "idiomas": { "padrao": "pt-BR", "outros": [] },
+  "logo": { "escuro": null, "claro": null },
+  "favicon": "/favicon.svg",
+  "tema": { "padrao": "escuro", "fontes": { "titulo": null, "texto": null, "codigo": null } },
+  "diagrama": { "ativo": true },
+  "auth": { "modo": "workos", "permitirPreview": true, "sessaoHoras": 12, "cookie": null },
+  "rodape": "",
+  "seo": { "noindex": true }
+}

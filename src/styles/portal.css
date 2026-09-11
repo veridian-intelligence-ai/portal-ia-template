@@ -1,0 +1,642 @@
+/* ── O shell do portal e os componentes do manual (seção 7) ─────────
+   Só var(): nenhum literal de cor aqui. Quem define cor é tokens.css. */
+
+.pular {
+  position: absolute;
+  left: -999px;
+  top: var(--s-2);
+  z-index: 100;
+  padding: var(--s-2) var(--s-3);
+  background: var(--primary);
+  color: var(--primary-ink);
+  border-radius: var(--r-md);
+}
+.pular:focus-visible {
+  left: var(--s-2);
+}
+
+/* ── A moldura: barra lateral fixa no desktop, cabeçalho no celular ── */
+.portal {
+  min-height: 100dvh;
+}
+.lateral {
+  display: none;
+}
+.principal {
+  min-width: 0;
+}
+
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: var(--topo-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-3) var(--margin-x);
+  background: var(--surface-0);
+  border-bottom: 1px solid var(--border);
+}
+.controles {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* A marca (2.2): logo do cliente por tema, ou o nome curto em Unbounded. */
+.marca {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  color: var(--text-primary);
+}
+.marca-nome {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.marca-logo {
+  height: 32px;
+  width: auto;
+}
+.marca-logo-claro {
+  display: none;
+}
+html.theme-light .marca-logo-escuro {
+  display: none;
+}
+html.theme-light .marca-logo-claro {
+  display: block;
+}
+
+/* Idioma e tema, lado a lado, no canto superior direito (3.4). */
+.idiomas {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.idioma {
+  padding: 0 var(--s-3);
+  height: 34px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-button);
+  color: var(--text-secondary);
+}
+.idioma + .idioma {
+  border-left: 1px solid var(--border);
+}
+.idioma:hover {
+  color: var(--text-primary);
+}
+.idioma[aria-pressed='true'] {
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+.tema-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  transition: border-color 120ms;
+}
+.tema-toggle:hover {
+  border-color: var(--border-strong);
+}
+
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+.user-chip-email {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+/* ── Navegação ───────────────────────────────────────────────────── */
+.nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-3);
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+  transition: border-color 120ms, color 120ms;
+}
+.nav a:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.nav a[aria-current='page'] {
+  color: var(--text-primary);
+  background: var(--surface-1);
+  border-color: var(--border);
+}
+.nav .icone {
+  flex: none;
+}
+.nav-numero {
+  /* Metadado de dois dígitos. Não usa --text-tertiary: sobre a superfície
+     elevada do item ativo, no tema claro, o cinza médio mede 4,47:1 e
+     reprova. O portão de contraste achou isso; fica registrado. */
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+.nav-titulo {
+  min-width: 0;
+}
+/* No celular a navegação é uma fileira que rola na horizontal. */
+.nav-movel {
+  position: sticky;
+  top: var(--topo-h);
+  z-index: 40;
+  background: var(--surface-0);
+  border-bottom: 1px solid var(--border);
+  padding: var(--s-2) var(--margin-x);
+  overflow-x: auto;
+}
+.nav-movel ul {
+  display: flex;
+  gap: var(--s-2);
+  width: max-content;
+}
+.nav-movel a {
+  white-space: nowrap;
+  padding: var(--s-2) var(--s-3);
+}
+.nav-movel .nav-numero {
+  display: none;
+}
+
+/* ── Conteúdo ────────────────────────────────────────────────────── */
+.conteudo {
+  padding: var(--s-6) var(--margin-x) var(--s-8);
+  max-width: calc(var(--measure) + 2 * var(--margin-x));
+}
+.conteudo:focus {
+  outline: none;
+}
+/* O diagrama não é prosa: ganha a largura toda. */
+.conteudo:has(.secao-diagrama) {
+  max-width: none;
+}
+.secao > h1 {
+  margin-bottom: var(--s-4);
+}
+.subtitulo {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  max-width: 60ch;
+  margin-bottom: var(--s-5);
+}
+
+/* Kicker (4.2): Inter 11px, caixa alta, letter-spacing largo, com o
+   traço curto depois do número (desenhado, não digitado). */
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-kicker);
+  font-weight: 500;
+  line-height: var(--leading-kicker);
+  letter-spacing: var(--tracking-kicker);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.kicker-numero::after {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+}
+
+.nesta-secao {
+  margin: 0 0 var(--s-6);
+  padding: var(--s-4) var(--s-5);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.nesta-secao .kicker {
+  margin-bottom: var(--s-2);
+}
+.nesta-secao ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  font-size: var(--text-sm);
+}
+.nesta-secao a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* A prosa: o que o markdown vira. */
+.prosa > * + * {
+  margin-top: var(--s-4);
+}
+.prosa h2 {
+  margin-top: var(--s-7);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--border);
+}
+.prosa h3 {
+  margin-top: var(--s-6);
+}
+.prosa h4 {
+  margin-top: var(--s-5);
+}
+.prosa h2 + *,
+.prosa h3 + *,
+.prosa h4 + * {
+  margin-top: var(--s-3);
+}
+.prosa p,
+.prosa li {
+  color: var(--text-primary);
+}
+.prosa ul,
+.prosa ol {
+  padding-left: 1.4em;
+}
+.prosa li + li {
+  margin-top: var(--s-2);
+}
+.prosa a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.prosa strong {
+  font-weight: 600;
+}
+.prosa hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--s-6) 0;
+}
+.prosa code {
+  padding: 0.1em 0.4em;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+/* Bloco de terminal (7.2): fundo elevado, sem borda, raio 12px, 20px. */
+.terminal {
+  margin: 0;
+  padding: 20px;
+  background: var(--surface-1);
+  border-radius: var(--r-lg);
+  overflow-x: auto;
+  color: var(--text-primary);
+}
+.terminal code {
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: var(--text-code);
+}
+.terminal-prompt .linha::before {
+  content: '> ';
+  color: var(--text-secondary);
+}
+.prosa figure {
+  margin: var(--s-5) 0;
+}
+.prosa figure img {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface-1);
+}
+.prosa figcaption {
+  margin-top: var(--s-2);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+  letter-spacing: var(--tracking-xs);
+  color: var(--text-secondary);
+}
+/* Tabela listrada, dentro de uma caixa que rola no celular. */
+.tabela {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.tabela table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+}
+.tabela th,
+.tabela td {
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+.tabela th {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  background: var(--surface-1);
+  color: var(--text-primary);
+}
+.tabela tr:last-child td {
+  border-bottom: 0;
+}
+.tabela tbody tr:nth-child(even) td {
+  background: var(--surface-1);
+}
+/* Citação vira callout: barra à esquerda, fundo elevado. */
+.callout {
+  padding: var(--s-4) var(--s-5);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  color: var(--text-primary);
+}
+.callout > * + * {
+  margin-top: var(--s-3);
+}
+.callout-aviso {
+  margin-bottom: var(--s-5);
+}
+
+/* ::: cards → grade de cards de superfície (7.1). */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: var(--s-4);
+}
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--s-5);
+  transition: border-color 120ms;
+}
+.card-conteudo > * + * {
+  margin-top: var(--s-3);
+}
+.card-conteudo h3 {
+  font-size: var(--text-sm);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  letter-spacing: var(--tracking-button);
+}
+.card-conteudo p {
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+  color: var(--text-secondary);
+}
+
+/* ::: passos → sequência numerada. */
+.passos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+.passo {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.passo-numero {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h3);
+  line-height: 1;
+  color: var(--text-primary);
+  padding-top: 2px;
+}
+.passo-corpo > * + * {
+  margin-top: var(--s-2);
+}
+.passo-corpo h3 {
+  font-size: var(--text-sm);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  letter-spacing: var(--tracking-button);
+}
+.passo-corpo p {
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+  color: var(--text-secondary);
+}
+
+/* ── Botões (7.4 e 7.5) ──────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 0.875rem var(--s-5);
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-button);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms, background-color 120ms;
+}
+.btn-primario {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-ink);
+}
+.btn-primario:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+.btn-primario:active {
+  background: var(--primary-active);
+  border-color: var(--primary-active);
+}
+.btn-secundario {
+  background: transparent;
+  border-color: var(--border);
+}
+.btn-secundario:hover {
+  border-color: var(--border-strong);
+}
+.btn-pequeno {
+  padding: var(--s-2) var(--s-3);
+  font-size: var(--text-xs);
+}
+.btn:disabled {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* ── Pílula de estado (7.3): ícone + rótulo, nunca só cor ───────── */
+.pilula {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--s-1) 10px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  font-family: var(--font-ui);
+  font-size: var(--text-pill);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-pill);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.pilula[data-estado='aguardando'] .icone {
+  color: var(--border);
+}
+.pilula[data-estado='execucao'] .icone-ponto {
+  animation: pulso var(--pulse) ease-in-out infinite;
+}
+@keyframes pulso {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* ── Anterior / próxima e rodapé ────────────────────────────────── */
+.secao-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  margin-top: var(--s-8);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--border);
+}
+.secao-nav .btn {
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+.secao-nav-dir {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  letter-spacing: var(--tracking-pill);
+}
+.secao-nav-titulo {
+  overflow-wrap: anywhere;
+}
+.rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  padding: var(--s-5) var(--margin-x);
+  border-top: 1px solid var(--border);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+  color: var(--text-secondary);
+}
+.rodape-nome {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.rodape-texto::before {
+  content: '·';
+  margin: 0 var(--s-2);
+}
+.lateral-pe {
+  margin-top: auto;
+  padding-top: var(--s-5);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+/* ── Desktop: barra lateral fixa ─────────────────────────────────── */
+@media (min-width: 900px) {
+  .portal {
+    display: grid;
+    grid-template-columns: var(--lateral-w) minmax(0, 1fr);
+  }
+  .lateral {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    padding: var(--s-5) var(--s-4);
+    background: var(--surface-1);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+  }
+  .lateral .nav a[aria-current='page'] {
+    background: var(--surface-2);
+  }
+  .lateral .marca {
+    padding: 0 var(--s-3);
+  }
+  .topo-marca,
+  .nav-movel {
+    display: none;
+  }
+  .topo {
+    justify-content: flex-end;
+  }
+  .conteudo {
+    padding: var(--s-8) var(--s-8) var(--s-9);
+  }
+}

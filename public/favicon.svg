@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Ícone neutro do template: um documento linear, branco sobre preto
+       (manual, 5.1). Troque por public/marca/ e o campo favicon de
+       site.config.json. -->
+  <rect width="32" height="32" rx="7" fill="#000000"/>
+  <path d="M10 6.5h8l5 5v14a1.5 1.5 0 0 1-1.5 1.5h-11.5a1.5 1.5 0 0 1-1.5-1.5v-17.5a1.5 1.5 0 0 1 1.5-1.5z" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M18 6.5v5h5M12.5 16h7M12.5 20h7" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

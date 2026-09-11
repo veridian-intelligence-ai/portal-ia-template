@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" width="720" height="200" role="img" aria-labelledby="t">
+  <title id="t">Do markdown ao portal</title>
+  <style>
+    .caixa { fill: #1a1a1a; stroke: #3a3a3a; stroke-width: 1.5; }
+    .texto { font-family: Inter, Arial, sans-serif; font-size: 15px; fill: #ffffff; font-weight: 500; }
+    .sub { font-family: 'JetBrains Mono', Menlo, monospace; font-size: 12px; fill: #e5e5e5; }
+    .seta { fill: none; stroke: #ffffff; stroke-width: 1.5; }
+    .icone { fill: none; stroke: #ffffff; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <rect width="720" height="200" fill="#000000"/>
+  <g transform="translate(24 52)">
+    <rect class="caixa" width="200" height="96" rx="12"/>
+    <g transform="translate(20 22)"><path class="icone" d="M4 1h9l6 6v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z"/><path class="icone" d="M13 1v6h6M6 12h9M6 16h9"/></g>
+    <text class="texto" x="56" y="40">content/*.md</text>
+    <text class="sub" x="56" y="62">frontmatter + markdown</text>
+  </g>
+  <path class="seta" d="M232 100 H276"/><path class="seta" d="M268 94 L276 100 L268 106"/>
+  <g transform="translate(284 52)">
+    <rect class="caixa" width="200" height="96" rx="12"/>
+    <g transform="translate(20 22)"><circle class="icone" cx="12" cy="12" r="3.5"/><path class="icone" d="M12 1v3M12 20v3M1 12h3M20 12h3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></g>
+    <text class="texto" x="56" y="40">npm run build</text>
+    <text class="sub" x="56" y="62">plugins/conteudo.js</text>
+  </g>
+  <path class="seta" d="M492 100 H536"/><path class="seta" d="M528 94 L536 100 L528 106"/>
+  <g transform="translate(544 52)">
+    <rect class="caixa" width="152" height="96" rx="12"/>
+    <g transform="translate(20 22)"><path class="icone" d="M7 19h10.5a4 4 0 0 0 .5-8A6 6 0 0 0 6.4 9.9 4.5 4.5 0 0 0 7 19z"/></g>
+    <text class="texto" x="56" y="40">Portal</text>
+    <text class="sub" x="56" y="62">dist/ + login</text>
+  </g>
+</svg>

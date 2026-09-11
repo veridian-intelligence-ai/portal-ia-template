@@ -1,0 +1,215 @@
+/* ── O diagrama: raias, setas e nós, tudo em tokens ──────────────── */
+.diagrama-rolagem {
+  overflow-x: auto;
+  margin: var(--s-5) calc(-1 * var(--margin-x)) 0;
+  padding: 0 var(--margin-x) var(--s-3);
+}
+@media (min-width: 900px) {
+  .diagrama-rolagem {
+    margin: var(--s-5) 0 0;
+    padding: 0 0 var(--s-3);
+  }
+}
+.diagrama-mapa {
+  position: relative;
+  color: var(--text-primary);
+}
+.diagrama-svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.raia rect {
+  fill: var(--surface-0);
+  stroke: var(--border);
+  stroke-width: 1;
+}
+html.theme-light .raia rect {
+  fill: var(--surface-0);
+}
+.raia-titulo,
+.grupo-titulo,
+.ligacao-rotulo {
+  font-family: var(--font-ui);
+  font-size: var(--text-kicker);
+  font-weight: 500;
+  letter-spacing: var(--tracking-kicker);
+  /* fill por currentColor: é o que deixa o portão de contraste esconder
+     o texto (ele apaga `color`) e medir o fundo real debaixo dele. */
+  fill: currentColor;
+  color: var(--text-secondary);
+}
+.ligacao-rotulo {
+  letter-spacing: var(--tracking-xs);
+  font-size: var(--text-xs);
+}
+.ligacao-rotulo-caixa rect {
+  fill: var(--surface-0);
+}
+.grupo rect {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+.ligacao path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  color: var(--text-primary);
+}
+.ligacao-apoio path {
+  stroke-dasharray: 3 5;
+  color: var(--text-secondary);
+}
+
+/* O nó: card de superfície (7.1), borda branca no hover e quando aberto. */
+.no {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 0 var(--s-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  color: var(--text-primary);
+  text-align: left;
+  transition: border-color 120ms;
+}
+.no:hover,
+.no[aria-expanded='true'] {
+  border-color: var(--border-strong);
+}
+.no[data-tipo='plataforma'] {
+  border-width: 2px;
+}
+.no[data-estado='futuro'] {
+  border-style: dashed;
+}
+.no-icone {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.no-texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+.no-titulo {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.25;
+}
+.no-subtitulo {
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.no-estado {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  color: var(--text-secondary);
+}
+
+/* A ficha (manual 7): fundo de card, borda, raio 12px, véu preto. */
+.ficha {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  max-width: min(640px, calc(100vw - 2 * var(--margin-x)));
+  width: 100%;
+}
+.ficha::backdrop {
+  background: var(--veu-modal);
+}
+.ficha-caixa {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--s-5);
+  max-height: calc(100dvh - 2 * var(--s-5));
+  overflow-y: auto;
+}
+.ficha-cabeca {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--s-4);
+  margin-bottom: var(--s-4);
+}
+.ficha-cabeca h2 {
+  font-size: var(--text-h3);
+}
+.ficha-subtitulo {
+  margin-top: var(--s-2);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+.ficha-fechar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.ficha-fechar:hover {
+  border-color: var(--border-strong);
+}
+.ficha-secao {
+  margin-top: var(--s-5);
+}
+.ficha-secao h3 {
+  font-family: var(--font-ui);
+  font-size: var(--text-kicker);
+  font-weight: 500;
+  letter-spacing: var(--tracking-kicker);
+  color: var(--text-secondary);
+  margin-bottom: var(--s-2);
+}
+.ficha-secao p {
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+}
+.ficha-como {
+  margin: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+.ficha-como div {
+  display: grid;
+  grid-template-columns: minmax(96px, 30%) 1fr;
+  gap: var(--s-3);
+  padding: var(--s-2) 0;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+}
+.ficha-como dt {
+  font-weight: 600;
+}
+.ficha-como dd {
+  margin: 0;
+  color: var(--text-secondary);
+}
+.ficha .callout {
+  background: var(--surface-2);
+}
+.ficha .terminal {
+  background: var(--surface-2);
+  white-space: pre-wrap;
+}
