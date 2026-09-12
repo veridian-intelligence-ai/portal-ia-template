@@ -2,14 +2,26 @@
  * O diagrama declarado: o layout é calculado (nenhuma coordenada à mão),
  * a navegação por teclado cobre todos os nós na ordem do arquivo, e o
  * YAML de exemplo é válido. Ligações e raias inexistentes são erro.
+ *
+ * O diagrama é opcional: quem não quer um apaga `content/diagrama.yaml`
+ * ou põe `"diagrama": { "ativo": false }` na configuração. Por isso o
+ * exemplo do repositório é lido só se existir, e o que ele verifica a
+ * mais é pulado quando não existe. O motor continua coberto pelo YAML
+ * mínimo escrito aqui e por diretórios temporários.
  */
-import { readFileSync } from 'node:fs'
-import { load } from 'js-yaml'
-import { describe, expect, it } from 'vitest'
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { dump, load } from 'js-yaml'
+import { afterAll, describe, expect, it } from 'vitest'
 import { compilarDiagrama, validarDiagrama } from '../plugins/conteudo.js'
 import { calcularLayout, MEDIDAS, ordemDeNavegacao } from '../src/diagrama/layout.js'
 
-const exemplo = load(readFileSync('content/diagrama.yaml', 'utf8'))
+const EXEMPLO = 'content/diagrama.yaml'
+const exemplo = existsSync(EXEMPLO) ? load(readFileSync(EXEMPLO, 'utf8')) : null
+/** Só roda quando o repositório ainda tem o diagrama de exemplo. */
+const comExemplo = it.skipIf(exemplo === null)
+
 const minimo = () => ({
   titulo: 'T',
   raias: [{ id: 'a', titulo: 'A' }, { id: 'b', titulo: 'B' }],
@@ -22,12 +34,40 @@ const minimo = () => ({
   grupos: [{ titulo: 'G', nos: ['n3'] }],
 })
 
+/** Os diagramas que o layout precisa dar conta: o mínimo sempre, o exemplo quando há. */
+const diagramas = () => (exemplo ? [minimo(), exemplo] : [minimo()])
+
+const temporarios = []
+afterAll(() => {
+  for (const d of temporarios) rmSync(d, { recursive: true, force: true })
+})
+
+function conteudoTemporario(arquivos = {}) {
+  const dir = mkdtempSync(join(tmpdir(), 'portal-diagrama-'))
+  temporarios.push(dir)
+  mkdirSync(dir, { recursive: true })
+  for (const [nome, dados] of Object.entries(arquivos)) writeFileSync(join(dir, nome), dump(dados))
+  return dir
+}
+
 describe('validação', () => {
-  it('o diagrama de exemplo é válido e compila para o idioma padrão', () => {
+  comExemplo('o diagrama de exemplo do repositório é válido e compila para o idioma padrão', () => {
     expect(() => validarDiagrama(exemplo, 'diagrama.yaml')).not.toThrow()
     const c = compilarDiagrama({ dir: 'content', site: { idiomas: { padrao: 'pt-BR', outros: ['en'] }, diagrama: { ativo: true } } })
     expect(c.porIdioma['pt-BR'].titulo).toBe(exemplo.titulo)
     expect(c.porIdioma.en).toBe(c.porIdioma['pt-BR'])
+  })
+  it('lê o diagrama do diretório e repete o padrão nos outros idiomas', () => {
+    const dir = conteudoTemporario({ 'diagrama.yaml': minimo() })
+    const c = compilarDiagrama({ dir, site: { idiomas: { padrao: 'pt-BR', outros: ['en'] }, diagrama: { ativo: true } } })
+    expect(c.porIdioma['pt-BR'].titulo).toBe('T')
+    expect(c.porIdioma.en).toBe(c.porIdioma['pt-BR'])
+    expect(c.arquivos).toEqual([join(dir, 'diagrama.yaml')])
+  })
+  it('sem arquivo, não há diagrama — a ausência é caso válido, não erro', () => {
+    const dir = conteudoTemporario()
+    expect(compilarDiagrama({ dir, site: { idiomas: { padrao: 'pt-BR', outros: ['en'] }, diagrama: { ativo: true } } }))
+      .toEqual({ porIdioma: null, arquivos: [] })
   })
   it('desligado na configuração, não há diagrama', () => {
     expect(compilarDiagrama({ dir: 'content', site: { idiomas: { padrao: 'pt-BR' }, diagrama: { ativo: false } } }).porIdioma).toBeNull()
@@ -53,18 +93,20 @@ describe('validação', () => {
 
 describe('layout calculado', () => {
   it('todo nó tem posição, dentro da própria raia, e a caixa tem um tamanho só', () => {
-    const l = calcularLayout(exemplo)
-    expect(l.nos).toHaveLength(exemplo.nos.length)
-    for (const n of l.nos) {
-      const raia = l.raias.find((r) => r.id === n.raia)
-      expect(n.x).toBeGreaterThanOrEqual(raia.x)
-      expect(n.x + n.largura).toBeLessThanOrEqual(raia.x + raia.largura)
-      expect(n.largura).toBe(MEDIDAS.noLargura)
-      expect(n.altura).toBe(MEDIDAS.noAltura)
-      expect(n.y).toBe(MEDIDAS.margem + MEDIDAS.cabecalho + (n.linha - 1) * MEDIDAS.linhaAltura)
+    for (const d of diagramas()) {
+      const l = calcularLayout(d)
+      expect(l.nos).toHaveLength(d.nos.length)
+      for (const n of l.nos) {
+        const raia = l.raias.find((r) => r.id === n.raia)
+        expect(n.x).toBeGreaterThanOrEqual(raia.x)
+        expect(n.x + n.largura).toBeLessThanOrEqual(raia.x + raia.largura)
+        expect(n.largura).toBe(MEDIDAS.noLargura)
+        expect(n.altura).toBe(MEDIDAS.noAltura)
+        expect(n.y).toBe(MEDIDAS.margem + MEDIDAS.cabecalho + (n.linha - 1) * MEDIDAS.linhaAltura)
+      }
+      expect(l.largura).toBeGreaterThan(0)
+      expect(l.altura).toBeGreaterThan(0)
     }
-    expect(l.largura).toBeGreaterThan(0)
-    expect(l.altura).toBeGreaterThan(0)
   })
   it('raias são colunas na ordem declarada, sem sobreposição', () => {
     const l = calcularLayout(minimo())
@@ -92,7 +134,9 @@ describe('layout calculado', () => {
     expect(g.y + g.altura).toBeGreaterThan(n3.y + n3.altura)
   })
   it('a ordem de navegação por teclado é a ordem dos nós no arquivo, e cobre todos', () => {
-    expect(ordemDeNavegacao(exemplo)).toEqual(exemplo.nos.map((n) => n.id))
-    expect(new Set(ordemDeNavegacao(exemplo)).size).toBe(exemplo.nos.length)
+    for (const d of diagramas()) {
+      expect(ordemDeNavegacao(d)).toEqual(d.nos.map((n) => n.id))
+      expect(new Set(ordemDeNavegacao(d)).size).toBe(d.nos.length)
+    }
   })
 })

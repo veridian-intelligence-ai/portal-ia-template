@@ -70,6 +70,13 @@ Isso é de propósito: conteúdo inválido não publica.
 
 Os portões visuais precisam de `npm run build && npm run preview` na :4173.
 
+O diagrama é opcional: apagar `content/diagrama.yaml` ou pôr
+`"diagrama": { "ativo": false }` em `site.config.json` desliga o mapa, e
+os portões continuam passando. `tests/diagrama.test.js` lê o exemplo do
+repositório só se ele existir e pula o caso que depende dele; o resto do
+arquivo prova o motor com um YAML mínimo escrito no próprio teste. Ao
+mexer nesse teste, não volte a ler `content/` fora de um `existsSync`.
+
 ## Identidade
 
 O manual de marca está em `docs/MANUAL_DE_MARCA.md`. Os tokens são os únicos
